@@ -1,0 +1,14 @@
+from postcreate photo in PhotoController
+
+$image = $request->file('image');
+        $id = $request->get('id');
+        Photo::create
+        (
+            [
+                'title' => $request->get('title'),
+                'description' => $request->get('description'),
+                'path' => $this->createImage($image),
+                'album_id' => 'id';
+            ]
+        );
+        return redirect("/validated/photos?id=$id")->with(['created'=>'Photo added']);

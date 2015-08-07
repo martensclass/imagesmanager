@@ -5,7 +5,7 @@
 	<div class="row">
 		<div class="col-md-8 col-md-offset-2">
 			<div class="panel panel-default">
-				<div class="panel-heading">Login</div>
+				<div class="panel-heading">Reset Password</div>
 				<div class="panel-body">
 					@if (count($errors) > 0)
 						<div class="alert alert-danger">
@@ -18,13 +18,7 @@
 						</div>
 					@endif
 
-					@if(Session::has('success'))
-						<div class="alert alert-success">
-							{{Session::get('success')}}<br/><br/>
-						</div>
-					@endif
-
-					<form class="form-horizontal" role="form" method="POST" action="/auth/login">
+					<form class="form-horizontal" role="form" method="POST" action="{{ url ('/auth/recover-password') }}">
 						<input type="hidden" name="_token" value="{{ csrf_token() }}">
 
 						<div class="form-group">
@@ -35,35 +29,48 @@
 						</div>
 
 						<div class="form-group">
-							<label class="col-md-4 control-label">Password</label>
+							<label class="col-md-4 control-label">New Password</label>
 							<div class="col-md-6">
 								<input type="password" class="form-control" name="password">
 							</div>
 						</div>
 
 						<div class="form-group">
-							<div class="col-md-6 col-md-offset-4">
-								<div class="checkbox">
-									<label>
-										<input type="checkbox" name="remember"> Remember Me
-									</label>
-								</div>
+							<label class="col-md-4 control-label">Confirm New Password</label>
+							<div class="col-md-6">
+								<input type="password" class="form-control" name="password_confirmation">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-4 control-label">Security Question</label>
+							<div class="col-md-6">
+								<input type="text" class="form-control" name="question" value="{{ old('question') }}">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-4 control-label">Answer to Secuirty Question</label>
+							<div class="col-md-6">
+								<input type="password" class="form-control" name="answer" value="{{ old('answer') }}">
 							</div>
 						</div>
 
 						<div class="form-group">
 							<div class="col-md-6 col-md-offset-4">
 								<button type="submit" class="btn btn-primary" style="margin-right: 15px;">
-									Login
+									Reset Password
 								</button>
 
-								<a href="/auth/recover-password">Forgot Your Password?</a>
+								
 							</div>
 						</div>
 					</form>
+
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
 @endsection

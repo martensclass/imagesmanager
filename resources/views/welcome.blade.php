@@ -1,5 +1,6 @@
 <html>
 	<head>
+	 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 		<link href='//fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
 
 		<style>
@@ -38,8 +39,20 @@
 	<body>
 		<div class="container">
 			<div class="content">
-				<div class="title">Laravel 5</div>
-				<div class="quote">{{ Inspiring::quote() }}</div>
+			
+				@if (count($errors) > 0)
+						<div class="alert alert-danger">
+							<strong>Whoops!</strong> There were some problems with your input.<br><br>
+							<ul>
+								@foreach ($errors->all() as $error)
+									<li>{{ $error }}</li>
+								@endforeach
+							</ul>
+						</div>
+					@endif
+
+				<div class="title well">Images Manager</div>
+				<div><a href="auth/login" class="btn btn-primary">Log In</a> | <a href="auth/register" class="btn btn-warning">Register</a> </div>
 			</div>
 		</div>
 	</body>
