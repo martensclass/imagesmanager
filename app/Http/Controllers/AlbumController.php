@@ -2,14 +2,16 @@
 
 use ImagesManager2\Http\Requests;
 use ImagesManager2\Http\Controllers\Controller;
-
+use ImagesManager2\Http\Controllers\PhotoController; #to delete photos
 use Illuminate\Http\Request;
 
 use ImagesManager2\Album;
+use ImagesManager2\Photo;
 use Auth;
 
 use ImagesManager2\Http\Requests\CreateAlbumRequest;
 use ImagesManager2\Http\Requests\EditAlbumRequest;
+use ImagesManager2\Http\Requests\DeleteAlbumRequest;
 
 class AlbumController extends Controller {
 
@@ -65,9 +67,21 @@ class AlbumController extends Controller {
 
     }
 
-    public function postDeleteAlbum()
+    public function postDeleteAlbum(DeleteAlbumRequest $request)
     {
-    	return 'Deleting album..';
+    	$album = Album::find($request->get('id'));
+        $photos = $album->photos;
+        $controller = new PhotoController;
+
+        foreach ($photos as $photo)
+        {
+            $controller->deleteImage($photo->path); #removes physical pic
+            $photo->delete(); #removes record of photo from db
+        }
+
+        $album->delete();
+
+        return redirect('/validated/albums') -> with (['deleted' => 'Album deleted.']);
     }
 
 }

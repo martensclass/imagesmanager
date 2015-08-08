@@ -6,6 +6,8 @@ use ImagesManager2\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use ImagesManager2\Http\Requests\ShowPhotoRequest;
 use ImagesManager2\Http\Requests\CreatePhotoRequest;
+use ImagesManager2\Http\Requests\EditPhotoRequest;
+use ImagesManager2\Http\Requests\DeletePhotoRequest;
 
 use ImagesManager2\Album;
 use ImagesManager2\Photo;
@@ -51,19 +53,39 @@ class PhotoController extends Controller {
         return redirect("/validated/photos?id=$id")->with(['created'=>'Photo added']);
     }
 
-    public function getEditPhoto()
+    public function getEditPhoto($id)
     {
-    	return 'Page to edit an Photo';
+    	$photo = Photo::find($id);
+        return view('photos.edit-photo',['photo' => $photo]);
     }
 
-    public function postEditPhoto()
+
+    public function postEditPhoto(EditPhotoRequest $request)
     {
-    	return 'Editing Photo..';
+    	$photo = Photo::find($request->get('id'));
+        $photo->title = $request->get('title');
+        $photo->description = $request->get('description');
+
+        if ($request->hasFile('image'))
+        {
+            $this->deleteImage($photo->path);
+            $image = $request->file('image');
+
+            $photo->path = $this->createImage($image);
+        }
+
+        $photo->save();
+          return redirect("/validated/photos?id=$photo->album_id")->with(['edited' => 'Photo Updated']);
+        
     }
 
-    public function postDeletePhoto()
+    public function postDeletePhoto(DeletePhotoRequest $request)
     {
-    	return 'Deleting Photo..';
+    	 $photo = Photo::find($request->get('id'));
+         $album_id = $photo->album_id;
+         $this->deleteImage($photo->path);
+         $photo->delete();
+         return redirect("/validated/photos?id=$album_id")->with(['deleted' => 'Photo Deleted']);
     }
 
 
@@ -75,5 +97,12 @@ class PhotoController extends Controller {
 
         return $path.$name;
     }
+
+    public function deleteImage($oldpath)
+    {
+        $oldpath=getcwd().$oldpath;
+        unlink(realpath($oldpath));
+    }
+
 
 }
